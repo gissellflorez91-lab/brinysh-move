@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pagar con PSE | BRINYSH MOVE</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#150f1a">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; base-uri 'self'; form-action 'none'">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23150f1a'/%3E%3Cpath d='M7 22 13 10l4 8 3-5 5 9' fill='none' stroke='%23f0b49e' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container header__inner">
+      <a class="logo" href="index.html" aria-label="BRINYSH MOVE, volver a la tienda">BRINYSH<span> MOVE</span></a>
+      <span class="secure">🔒 Pago seguro con PSE</span>
+      <a class="btn btn--ghost btn--sm" href="index.html">← Seguir comprando</a>
+    </div>
+  </header>
+
+  <main class="container checkout">
+    <p class="sim-banner" role="note"><strong>Modo demostración:</strong> este flujo simula PSE. No se conecta a ningún banco ni se cobra dinero real. Nunca ingreses datos bancarios reales.</p>
+
+    <!-- Paso 1: datos del comprador -->
+    <section id="viewForm" class="checkout__grid">
+      <form class="panel" id="payForm" novalidate>
+        <h1>Pagar con PSE</h1>
+        <p class="muted">Completa tus datos y elige tu banco. Te llevaremos a su portal para autorizar el pago.</p>
+
+        <fieldset>
+          <legend>Datos del comprador</legend>
+          <div class="row">
+            <label>Tipo de persona
+              <select name="personType" id="personType">
+                <option value="natural">Persona natural</option>
+                <option value="juridica">Persona jurídica</option>
+              </select>
+            </label>
+            <label>Tipo de documento
+              <select name="docType" id="docType"></select>
+            </label>
+          </div>
+          <div class="row">
+            <label>Número de documento
+              <input name="docNumber" id="docNumber" inputmode="numeric" maxlength="15" autocomplete="off" required>
+              <small class="err" data-for="docNumber"></small>
+            </label>
+            <label>Nombre completo / Razón social
+              <input name="fullName" maxlength="80" autocomplete="name" required>
+              <small class="err" data-for="fullName"></small>
+            </label>
+          </div>
+          <div class="row">
+            <label>Correo electrónico
+              <input name="email" type="email" maxlength="100" autocomplete="email" required>
+              <small class="err" data-for="email"></small>
+            </label>
+            <label>Celular
+              <input name="phone" type="tel" inputmode="numeric" maxlength="10" placeholder="3001234567" autocomplete="tel-national" required>
+              <small class="err" data-for="phone"></small>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Dirección de envío</legend>
+          <div class="row">
+            <label>Ciudad
+              <input name="city" maxlength="60" autocomplete="address-level2" required>
+              <small class="err" data-for="city"></small>
+            </label>
+            <label>Dirección
+              <input name="address" maxlength="100" autocomplete="street-address" required>
+              <small class="err" data-for="address"></small>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Banco</legend>
+          <label>Selecciona tu entidad financiera
+            <select name="bank" id="bank" required></select>
+            <small class="err" data-for="bank"></small>
+          </label>
+        </fieldset>
+
+        <label class="check">
+          <input type="checkbox" name="terms" required>
+          <span>Acepto los términos y condiciones y la política de tratamiento de datos (Ley 1581 de 2012).</span>
+        </label>
+        <small class="err" data-for="terms"></small>
+
+        <button class="btn btn--primary btn--block" type="submit" id="payBtn">Pagar con PSE</button>
+      </form>
+
+      <aside class="panel summary" aria-label="Resumen del pedido">
+        <h2>Resumen</h2>
+        <ul id="sumList" class="sum-list"></ul>
+        <div class="totals"><span>Total a pagar</span><strong id="sumTotal">$0</strong></div>
+        <p class="note">Envío gratis a todo el país (demo).</p>
+      </aside>
+    </section>
+
+    <!-- Paso 2: portal del banco (simulado) -->
+    <section id="viewBank" class="panel bank" hidden aria-live="polite">
+      <div class="bank__top">
+        <span class="pse-logo">PSE</span>
+        <span class="muted">Portal simulado de <strong id="bankName"></strong></span>
+      </div>
+      <h1>Autoriza el pago</h1>
+      <dl class="kv">
+        <div><dt>Comercio</dt><dd>BRINYSH MOVE</dd></div>
+        <div><dt>Referencia</dt><dd id="bankRef"></dd></div>
+        <div><dt>Valor</dt><dd id="bankAmount"></dd></div>
+      </dl>
+      <p class="muted">En un pago real aquí iniciarías sesión en tu banco. Elige el resultado que quieres simular:</p>
+      <div class="bank__actions">
+        <button class="btn btn--primary" type="button" data-result="approved">Aprobar pago</button>
+        <button class="btn btn--ghost" type="button" data-result="pending">Dejar pendiente</button>
+        <button class="btn btn--danger" type="button" data-result="rejected">Rechazar pago</button>
+      </div>
+    </section>
+
+    <!-- Paso 3: resultado -->
+    <section id="viewResult" class="panel result" hidden aria-live="polite">
+      <div class="result__icon" id="resIcon" aria-hidden="true"></div>
+      <h1 id="resTitle"></h1>
+      <p class="muted" id="resText"></p>
+      <dl class="kv">
+        <div><dt>Referencia</dt><dd id="resRef"></dd></div>
+        <div><dt>Estado</dt><dd id="resState"></dd></div>
+        <div><dt>Banco</dt><dd id="resBank"></dd></div>
+        <div><dt>Valor</dt><dd id="resAmount"></dd></div>
+        <div><dt>Fecha</dt><dd id="resDate"></dd></div>
+      </dl>
+      <div class="bank__actions">
+        <a class="btn btn--primary" href="index.html" id="resHome">Volver a la tienda</a>
+        <a class="btn btn--ghost" id="resRetry" href="checkout.html" hidden>Intentar de nuevo</a>
+      </div>
+    </section>
+
+    <p class="empty" id="emptyCart" hidden>Tu carrito está vacío. <a href="index.html#catalogo">Ir al catálogo</a></p>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/banks.js"></script>
+  <script src="js/checkout.js"></script>
+</body>
+</html>

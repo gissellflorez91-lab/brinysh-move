@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BRINYSH MOVE | Ropa deportiva</title>
+  <meta name="description" content="BRINYSH MOVE: ropa deportiva femenina de alto rendimiento. Camisetas, leggings, shorts, sudaderas y más. Compra online y escríbenos por WhatsApp.">
+  <meta name="theme-color" content="#150f1a">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; base-uri 'self'; form-action 'none'">
+  <meta property="og:title" content="BRINYSH MOVE | Ropa deportiva">
+  <meta property="og:description" content="Muévete con estilo. Ropa deportiva femenina de alto rendimiento.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23150f1a'/%3E%3Cpath d='M7 22 13 10l4 8 3-5 5 9' fill='none' stroke='%23f0b49e' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <a class="skip" href="#catalogo">Saltar al catálogo</a>
+
+  <header class="header">
+    <div class="container header__inner">
+      <a class="logo" href="#inicio" aria-label="BRINYSH MOVE, inicio">BRINYSH<span> MOVE</span></a>
+      <nav class="nav" id="nav" aria-label="Principal">
+        <a href="#inicio">Inicio</a>
+        <a href="#catalogo">Catálogo</a>
+        <a href="#nosotros">Nosotros</a>
+        <a href="#contacto">Contáctenos</a>
+      </nav>
+      <div class="header__actions">
+        <button class="cart-btn" id="openCart" type="button" aria-label="Abrir carrito">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h15l-1.5 9h-12zM6 6 5 3H2M9 20a1 1 0 1 0 0 .01M18 20a1 1 0 1 0 0 .01"/></svg>
+          <span class="cart-btn__count" id="cartCount" aria-live="polite">0</span>
+        </button>
+        <button class="burger" id="burger" type="button" aria-label="Menú" aria-expanded="false" aria-controls="nav"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="container hero__inner">
+        <div class="hero__text">
+          <p class="eyebrow">Colección mujer 2026</p>
+          <h1>Muévete con <em>elegancia</em> y fuerza.</h1>
+          <p class="lead">Ropa deportiva femenina diseñada para ti: telas suaves y transpirables, cortes que realzan tu figura y un estilo que se nota dentro y fuera del gimnasio.</p>
+          <div class="hero__cta">
+            <a class="btn btn--primary" href="#catalogo">Ver catálogo</a>
+            <a class="btn btn--ghost" href="#contacto">Hablar con un asesor</a>
+          </div>
+          <ul class="perks">
+            <li>Envíos a todo el país</li>
+            <li>Cambios en 30 días</li>
+            <li>Pago seguro</li>
+          </ul>
+        </div>
+        <div class="hero__art" aria-hidden="true">
+          <div class="hero__blob"></div>
+          <div class="hero__card" id="heroArt"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="catalogo">
+      <div class="container">
+        <div class="section__head">
+          <h2>Catálogo</h2>
+          <p>Elige tu talla y la cantidad, y agrégalo al carrito.</p>
+        </div>
+
+        <div class="toolbar">
+          <div class="chips" id="chips" role="group" aria-label="Filtrar por categoría"></div>
+          <div class="toolbar__right">
+            <label class="field">
+              <span class="sr">Buscar</span>
+              <input type="search" id="search" placeholder="Buscar prenda…" autocomplete="off">
+            </label>
+            <label class="field">
+              <span class="sr">Ordenar</span>
+              <select id="sort">
+                <option value="featured">Destacados</option>
+                <option value="asc">Precio: menor a mayor</option>
+                <option value="desc">Precio: mayor a menor</option>
+                <option value="name">Nombre A-Z</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <div class="grid" id="grid" aria-live="polite"></div>
+        <p class="empty" id="empty" hidden>No encontramos prendas con ese criterio.</p>
+      </div>
+    </section>
+
+    <section class="section section--alt" id="nosotros">
+      <div class="container about">
+        <div>
+          <h2>Hecha para moverse</h2>
+          <p>En BRINYSH MOVE creemos que la ropa deportiva debe acompañarte en cada repetición, cada kilómetro y cada día. Combinamos tecnología textil con diseño moderno para que te sientas cómodo y seguro.</p>
+        </div>
+        <ul class="features">
+          <li><strong>Tela Dry-Fit</strong><span>Secado rápido y transpirable.</span></li>
+          <li><strong>Ajuste ergonómico</strong><span>Costuras planas, sin roces.</span></li>
+          <li><strong>Resistente</strong><span>Mantiene color y forma lavado tras lavado.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="contacto">
+      <div class="container contact">
+        <div>
+          <h2>Contáctenos</h2>
+          <p>Estamos para ayudarte con tallas, pedidos y cambios.</p>
+          <ul class="contact__list">
+            <li><span>Correo</span><a href="mailto:brinyshflorez@gmail.com">brinyshflorez@gmail.com</a></li>
+            <li><span>Teléfono / WhatsApp</span><a href="tel:+573207108500">+57 320 710 8500</a></li>
+            <li><span>Horario</span>Lunes a sábado, 8:00 a.m. – 6:00 p.m.</li>
+            <li><span>Ubicación</span>Colombia · Envíos nacionales</li>
+          </ul>
+        </div>
+        <form class="form" id="contactForm" novalidate>
+          <h3>Escríbenos por WhatsApp</h3>
+          <label>Nombre
+            <input name="name" required maxlength="60" autocomplete="name">
+          </label>
+          <label>Mensaje
+            <textarea name="message" rows="4" required maxlength="400"></textarea>
+          </label>
+          <p class="form__error" id="formError" role="alert" hidden></p>
+          <button class="btn btn--primary" type="submit">Enviar por WhatsApp</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <span>© <span id="year"></span> BRINYSH MOVE. Sitio de demostración.</span>
+      <a href="mailto:brinyshflorez@gmail.com">brinyshflorez@gmail.com</a>
+    </div>
+  </footer>
+
+  <a class="wa" id="waFloat" href="#" target="_blank" rel="noopener noreferrer" aria-label="Chatear por WhatsApp con el vendedor">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 3a13 13 0 0 0-11 19.8L3 29l6.4-2A13 13 0 1 0 16 3zm0 2.4a10.6 10.6 0 1 1-5.5 19.7l-.4-.2-3.8 1.2 1.2-3.7-.3-.4A10.6 10.6 0 0 1 16 5.4zm-4.2 5.3c-.3 0-.7.1-1 .5-.4.4-1.300 1.300-1.300 3.100s1.300 3.600 1.500 3.800c.2.300 2.600 4.100 6.400 5.600 3.100 1.200 3.700 1 4.400.9.700-.1 2.200-.9 2.500-1.800.3-.9.3-1.600.2-1.800-.1-.2-.4-.3-.8-.5s-2.200-1.100-2.500-1.200c-.3-.1-.6-.2-.8.200-.2.400-.9 1.200-1.100 1.400-.2.200-.4.300-.8.100-.4-.2-1.600-.6-3-1.900-1.100-1-1.900-2.200-2.100-2.600-.2-.4 0-.6.200-.8l.6-.7c.2-.2.200-.4.400-.6.100-.3.100-.5 0-.7l-1.100-2.700c-.3-.7-.6-.6-.8-.6z"/></svg>
+  </a>
+
+  <div class="overlay" id="overlay" hidden></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-hidden="true">
+    <div class="drawer__head">
+      <h2 id="drawerTitle">Tu carrito</h2>
+      <button type="button" class="icon-btn" id="closeCart" aria-label="Cerrar carrito">✕</button>
+    </div>
+    <ul class="cart-list" id="cartList"></ul>
+    <p class="empty" id="cartEmpty">Tu carrito está vacío.</p>
+    <div class="drawer__foot">
+      <div class="totals"><span>Total</span><strong id="cartTotal">$0</strong></div>
+      <button type="button" class="btn btn--primary btn--block" id="checkout" disabled>Pagar con PSE</button>
+      <button type="button" class="btn btn--ghost btn--block" id="clearCart" disabled>Vaciar carrito</button>
+      <p class="note">Pago con PSE (débito desde tu cuenta bancaria). Demo: no se cobra dinero real.</p>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
