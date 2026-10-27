@@ -16,11 +16,18 @@ window.BM_EXTRA_COLORS = Object.freeze([
   { id: "crema", name: "Crema", hex: "#e6d3a8" },
   { id: "salvia", name: "Verde salvia", hex: "#62806c" },
   { id: "nude", name: "Nude", hex: "#e2cfc3" },
+  { id: "cafe", name: "Café", hex: "#6e4425" },
+  { id: "rosado", name: "Rosado", hex: "#d96bc4" },
+  { id: "rosa-palo", name: "Palo de Rosa", hex: "#e3bfb5" },
+  { id: "lila", name: "Lila", hex: "#b9a4e6" },
 ]);
 
 // Los productos con `gallery` tienen fotos reales por color; con `images`, fotos únicas (referenciales
 // para los demás colores). `photoColor` indica el color real de esas fotos, si es uno de los 4.
 window.BM_PRODUCTS = Object.freeze([
+  { id: "p24", name: "Enterizo Seamless Mística", category: "Enterizos", price: 85000, badge: "Nuevo", sizes: ["S", "M", "L"],
+    colors: ["cafe", "negro"],
+    gallery: { "cafe": ["img/mistica-cafe.jpg"], "negro": ["img/mistica-negro.jpg"] } },
   { id: "p23", name: "Enterizo Paris Tejido", category: "Enterizos", price: 82000, badge: "Nuevo", sizes: ["S", "M", "L"],
     colors: ["negro", "salvia", "nude"],
     gallery: { "negro": ["img/paris-negro.jpg"], "salvia": ["img/paris-salvia.jpg"], "nude": ["img/paris-nude.jpg"] } },
@@ -36,10 +43,15 @@ window.BM_PRODUCTS = Object.freeze([
       "fucsia": ["img/estrella-fucsia-frente.jpg", "img/estrella-fucsia-espalda.jpg"],
       "beige": ["img/estrella-beige-frente.jpg", "img/estrella-beige-espalda.jpg"],
     } },
-  { id: "p15", name: "Short Deportivo Alto Rendimiento", category: "Shorts", price: 28999, badge: "Nuevo", sizes: ["XS", "S", "M", "L"],
-    gallery: Object.fromEntries(["negro", "azul-marino", "borgona", "verde-oliva"].map((c) => [c, [`img/short-${c}.jpg`]])) },
-  { id: "p14", name: "Falda Deportiva Flea-Pleat", category: "Faldas", price: 25000, badge: "Más vendido", bestSeller: true, sizes: ["XS", "S", "M", "L"],
-    gallery: Object.fromEntries(["negro", "azul-marino", "borgona", "verde-oliva"].map((c) => [c, [`img/falda-${c}.jpg`]])) },
+  { id: "p15", name: "Short Texturizado", category: "Shorts", price: 42900, badge: "Nuevo", sizes: ["S", "M", "L"],
+    colors: ["rosado", "rosa-palo", "lila"],
+    gallery: Object.fromEntries(["rosado:fucsia", "rosa-palo:rosa", "lila:lila"].map((x) => {
+      const [c, f] = x.split(":");
+      return [c, [`img/short-tex-${f}-frente.jpg`, `img/short-tex-${f}-espalda.jpg`]];
+    })) },
+  { id: "p14", name: "Falda Capricho", category: "Faldas", price: 84900, badge: "Más vendido", bestSeller: true, sizes: ["Talla única"],
+    colors: ["crema"],
+    gallery: { "crema": ["img/falda-capricho-frente.jpg", "img/falda-capricho-espalda.jpg"] } },
   { id: "p13", name: "Leggings Láser Entrelazados", category: "Leggings", price: 70000, badge: "Nuevo", sizes: ["XS", "S", "M", "L"],
     gallery: Object.fromEntries(["negro", "azul-marino", "borgona", "verde-oliva"].map((c) =>
       [c, [`img/leggings-frente-${c}.jpg`, `img/leggings-espalda-${c}.jpg`]])) },
