@@ -4,7 +4,7 @@
   const CFG = window.BM_CONFIG;
   const byId = new Map(window.BM_PRODUCTS.map((p) => [p.id, p]));
   const STORAGE_KEY = "bm_cart_v1";
-  const colorName = new Map(window.BM_COLORS.map((c) => [c.id, c.name]));
+  const colorName = new Map([...window.BM_COLORS, ...(window.BM_EXTRA_COLORS || [])].map((c) => [c.id, c.name]));
   const $ = (s, r = document) => r.querySelector(s);
   const money = new Intl.NumberFormat(CFG.locale, { style: "currency", currency: CFG.currency, maximumFractionDigits: 0 });
 

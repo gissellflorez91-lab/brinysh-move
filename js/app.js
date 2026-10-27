@@ -11,7 +11,9 @@
   });
   const byId = new Map(PRODUCTS.map((p) => [p.id, p]));
   const COLORS = window.BM_COLORS;
-  const colorById = new Map(COLORS.map((c) => [c.id, c]));
+  const colorById = new Map([...COLORS, ...(window.BM_EXTRA_COLORS || [])].map((c) => [c.id, c]));
+  // Colores de una prenda: los 4 estándar, o los propios si el producto define `colors`.
+  const colorsOf = (p) => (p.colors ? p.colors.map((id) => colorById.get(id)) : COLORS);
   const DEFAULT_COLOR = COLORS[0].id;
 
   /* ---------- Ilustraciones SVG de las prendas ---------- */
@@ -101,7 +103,10 @@
       return raw.filter((l) => {
         const p = l && byId.get(l.id);
         return p && p.sizes.includes(l.size) && Number.isInteger(l.qty) && l.qty >= 1 && l.qty <= CFG.maxQty;
-      }).map(({ id, size, color, qty }) => ({ id, size, color: colorById.has(color) ? color : DEFAULT_COLOR, qty }));
+      }).map(({ id, size, color, qty }) => {
+        const list = colorsOf(byId.get(id));
+        return { id, size, color: list.some((c) => c.id === color) ? color : list[0].id, qty };
+      });
     } catch { return []; }
   }
   function saveCart() {
@@ -161,10 +166,10 @@
   }
 
   // Selector de color (los mismos 4 para todas las prendas).
-  function colorPicker(onChange) {
-    let current = DEFAULT_COLOR;
+  function colorPicker(list, onChange) {
+    let current = list[0].id;
     const name = el("strong", { text: colorById.get(current).name });
-    const buttons = COLORS.map((c) => {
+    const buttons = list.map((c) => {
       const b = el("button", {
         type: "button", class: "swatch", role: "radio", title: c.name,
         "aria-label": c.name, "aria-checked": String(c.id === current),
@@ -172,7 +177,7 @@
       b.style.setProperty("--sw", c.hex);
       b.addEventListener("click", () => {
         current = c.id;
-        buttons.forEach((x, i) => x.setAttribute("aria-checked", String(COLORS[i].id === current)));
+        buttons.forEach((x, i) => x.setAttribute("aria-checked", String(list[i].id === current)));
         name.textContent = c.name;
         onChange(current);
       });
@@ -195,8 +200,9 @@
         media.innerHTML = garmentSVG(p, `${p.id}-${color}`, color); // contenido propio y estático
       }
     };
-    const picker = colorPicker(paint);
-    paint(DEFAULT_COLOR);
+    const list = colorsOf(p);
+    const picker = colorPicker(list, paint);
+    paint(list[0].id);
     const sizeSel = el("select", { id: `size-${p.id}` }, ...p.sizes.map((s) => el("option", { value: s, text: s })));
     const qty = qtySelect(1, `Cantidad de ${p.name}`);
     qty.id = `qty-${p.id}`;
@@ -229,7 +235,7 @@
   /* ---------- Carrito ---------- */
   function addToCart(id, size, color, qty) {
     const p = byId.get(id);
-    if (!p || !p.sizes.includes(size) || !colorById.has(color) || !Number.isInteger(qty) || qty < 1) return;
+    if (!p || !p.sizes.includes(size) || !colorsOf(p).some((c) => c.id === color) || !Number.isInteger(qty) || qty < 1) return;
     const line = cart.find((l) => l.id === id && l.size === size && l.color === color);
     if (line) line.qty = Math.min(CFG.maxQty, line.qty + qty);
     else cart.push({ id, size, color, qty: Math.min(CFG.maxQty, qty) });
