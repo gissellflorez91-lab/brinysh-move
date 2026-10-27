@@ -12,11 +12,21 @@ window.BM_EXTRA_COLORS = Object.freeze([
   { id: "fucsia", name: "Fucsia", hex: "#d6145f" },
   { id: "beige", name: "Beige", hex: "#b9a07c" },
   { id: "blanco", name: "Blanco", hex: "#f3efe8" },
+  { id: "verde-oscuro", name: "Verde oscuro", hex: "#2f3a2c" },
+  { id: "crema", name: "Crema", hex: "#e6d3a8" },
+  { id: "salvia", name: "Verde salvia", hex: "#62806c" },
+  { id: "nude", name: "Nude", hex: "#e2cfc3" },
 ]);
 
 // Los productos con `gallery` tienen fotos reales por color; con `images`, fotos únicas (referenciales
 // para los demás colores). `photoColor` indica el color real de esas fotos, si es uno de los 4.
 window.BM_PRODUCTS = Object.freeze([
+  { id: "p23", name: "Enterizo Paris Tejido", category: "Enterizos", price: 82000, badge: "Nuevo", sizes: ["S", "M", "L"],
+    colors: ["negro", "salvia", "nude"],
+    gallery: { "negro": ["img/paris-negro.jpg"], "salvia": ["img/paris-salvia.jpg"], "nude": ["img/paris-nude.jpg"] } },
+  { id: "p22", name: "Enterizo Celestia", category: "Enterizos", price: 74000, badge: "Nuevo", sizes: ["S", "M", "L"],
+    colors: ["verde-oscuro", "crema"],
+    gallery: { "verde-oscuro": ["img/celestia-verde-oscuro.jpg"], "crema": ["img/celestia-crema.jpg"] } },
   { id: "p21", name: "Enterizo Cierre Sirena", category: "Enterizos", price: 86000, badge: "Nuevo", sizes: ["S", "M", "L"],
     colors: ["blanco", "negro"],
     gallery: { "blanco": ["img/sirena-blanco.jpg"], "negro": ["img/sirena-negro.jpg"] } },
