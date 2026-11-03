@@ -5,4 +5,7 @@ window.BM_CONFIG = Object.freeze({
   currency: "COP",
   locale: "es-CO",
   maxQty: 10,
+  // URL /exec del Apps Script que escribe en Google Sheets (ver apps-script/LEEME.md).
+  // Vacío = modo local: los registros quedan en la consola y en localStorage.
+  sheetsEndpoint: "https://script.google.com/macros/s/AKfycbxxcwDCHrHT6kZ_TMCcm735gb1JMz6ufONZH_lsfqtybCFfyNcp0PbMou2_zF-Md5JBCQ/exec",
 });
