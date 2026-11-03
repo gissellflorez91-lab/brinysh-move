@@ -34,7 +34,7 @@
     return n;
   }
   const show = (id) => {
-    ["viewForm", "viewBank", "viewResult"].forEach((v) => { $("#" + v).hidden = v !== id; });
+    ["viewForm", "viewBank", "viewResult", "viewSurvey", "viewThanks"].forEach((v) => { $("#" + v).hidden = v !== id; });
     window.scrollTo({ top: 0 });
   };
 
@@ -92,6 +92,24 @@
     return ok;
   }
 
+  /* ---------- Registro en Google Sheets (vía Apps Script) ---------- */
+  const LOG_KEY = "bm_local_log_v1";
+  function record(payload) {
+    const url = CFG.sheetsEndpoint;
+    if (!url) { // modo local: sin endpoint configurado
+      console.info("[BM] registro (modo local)", payload);
+      try {
+        const log = JSON.parse(localStorage.getItem(LOG_KEY) || "[]");
+        log.push({ at: new Date().toISOString(), ...payload });
+        localStorage.setItem(LOG_KEY, JSON.stringify(log.slice(-50)));
+      } catch { /* sin storage */ }
+      return Promise.resolve(true);
+    }
+    // text/plain evita el preflight CORS; la respuesta es opaca (no-cors).
+    return fetch(url, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload) })
+      .then(() => true, () => false);
+  }
+
   /* ---------- Flujo de pago simulado ---------- */
   let order = null;
 
@@ -102,6 +120,18 @@
       amount: total,
       // En producción: estos datos viajan al backend, que crea la transacción en la pasarela.
     };
+    const f = form.elements;
+    const pending = record({
+      type: "order",
+      ref: order.ref,
+      order: {
+        fullName: f.fullName.value.trim(), docType: f.docType.value, docNumber: f.docNumber.value.trim(),
+        email: f.email.value.trim(), phone: f.phone.value.trim(), city: f.city.value.trim(), address: f.address.value.trim(),
+        bank: order.bank, total,
+        items: cart.map((l) => ({ name: byId.get(l.id).name, size: l.size, color: colorName.get(l.color), qty: l.qty })),
+      },
+    });
+    order.saved = pending; // el cambio de estado espera a que el pedido se haya enviado
     $("#payBtn").disabled = true;
     $("#payBtn").textContent = "Redirigiendo a tu banco…";
     setTimeout(() => {
@@ -132,10 +162,71 @@
     $("#resAmount").textContent = money.format(order.amount);
     $("#resDate").textContent = new Intl.DateTimeFormat(CFG.locale, { dateStyle: "long", timeStyle: "short" }).format(new Date());
     $("#resRetry").hidden = status !== "rejected";
+    order.saved.then(() => record({ type: "status", ref: order.ref, status: r.state }));
+    $("#resSurvey").hidden = status !== "approved";
     if (status !== "rejected") {
       try { localStorage.removeItem(STORAGE_KEY); } catch { /* sin storage */ }
     }
     show("viewResult");
+  }
+
+  /* ---------- Encuesta ---------- */
+  function buildScales(form) {
+    form.querySelectorAll(".scale").forEach((box) => {
+      const q = box.dataset.q;
+      for (let n = +box.dataset.min; n <= +box.dataset.max; n++) {
+        box.append(el("label", {},
+          el("input", { type: "radio", name: q, value: String(n), "aria-label": String(n) }),
+          el("span", { text: String(n) })));
+      }
+    });
+  }
+  function submitSurvey(form) {
+    document.querySelectorAll(".survey .err").forEach((e) => { e.textContent = ""; });
+    const answers = { q5: form.elements.q5.value.trim() };
+    let ok = true;
+    ["q1", "q2", "q3", "q4"].forEach((q) => {
+      const c = form.querySelector(`input[name="${q}"]:checked`);
+      if (c) answers[q] = Number(c.value);
+      else { $(`.err[data-for="${q}"]`).textContent = "Selecciona una opción."; ok = false; }
+    });
+    if (!ok) return;
+    sendWithProgress(form, record({ type: "survey", ref: order.ref, answers }));
+  }
+
+  // El envío es "no-cors" (sin respuesta legible), así que el avance es estimado:
+  // sube rápido y se frena cerca de 90% hasta que la petición termina; luego completa a 100%.
+  function sendWithProgress(form, request) {
+    const MSGS = [[0, "Guardando tu opinión…"], [45, "Casi listo…"], [85, "Últimos detalles ✨"]];
+    const view = $("#viewSurvey"), fill = $("#surveyFill"), bar = $("#surveyBar");
+    const set = (n) => {
+      fill.style.width = n + "%";
+      bar.setAttribute("aria-valuenow", String(Math.round(n)));
+      $("#surveyPct").textContent = Math.round(n) + "%";
+      $("#surveyMsg").textContent = MSGS.filter(([t]) => n >= t).pop()[1];
+    };
+    $("#surveyBtn").hidden = true;
+    $("#surveySkip").hidden = true;
+    $("#surveyProgress").hidden = false;
+    view.classList.add("is-sending");
+    let pct = 0;
+    set(0);
+    const tick = setInterval(() => { pct += (90 - pct) * 0.08; set(pct); }, 120);
+    const minWait = new Promise((r) => setTimeout(r, 1400)); // evita un parpadeo si responde muy rápido
+    Promise.all([request, minWait]).then(([ok]) => {
+      clearInterval(tick);
+      set(100);
+      setTimeout(() => {
+        view.classList.remove("is-sending");
+        if (ok) show("viewThanks");
+        else { // fallo de red: permitir reintentar sin perder las respuestas
+          $("#surveyProgress").hidden = true;
+          $("#surveyBtn").hidden = false;
+          $("#surveySkip").hidden = false;
+          $(".err[data-for='q4']").textContent = "No pudimos enviar tus respuestas. Revisa tu conexión e inténtalo de nuevo.";
+        }
+      }, 450);
+    });
   }
 
   /* ---------- Init ---------- */
@@ -153,6 +244,11 @@
       e.preventDefault();
       if (validate(form)) startPayment(form);
     });
+    const survey = $("#surveyForm");
+    buildScales(survey);
+    $("#resSurvey").addEventListener("click", () => show("viewSurvey"));
+    $("#surveySkip").addEventListener("click", () => show("viewResult"));
+    survey.addEventListener("submit", (e) => { e.preventDefault(); submitSurvey(survey); });
     document.querySelectorAll("[data-result]").forEach((b) =>
       b.addEventListener("click", () => finish(b.dataset.result)));
   }

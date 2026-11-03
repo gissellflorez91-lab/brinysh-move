@@ -6,7 +6,7 @@
   <title>Pagar con PSE | BRINYSH MOVE</title>
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#150f1a">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; base-uri 'self'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; base-uri 'self'; form-action 'none'; connect-src https://script.google.com https://script.googleusercontent.com">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23150f1a'/%3E%3Cpath d='M7 22 13 10l4 8 3-5 5 9' fill='none' stroke='%23f0b49e' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -134,10 +134,47 @@
         <div><dt>Valor</dt><dd id="resAmount"></dd></div>
         <div><dt>Fecha</dt><dd id="resDate"></dd></div>
       </dl>
+
       <div class="bank__actions">
-        <a class="btn btn--primary" href="index.html" id="resHome">Volver a la tienda</a>
+        <button class="btn btn--primary" type="button" id="resSurvey" hidden>Calificar mi experiencia →</button>
+        <a class="btn btn--ghost" href="index.html" id="resHome">Volver a la tienda</a>
         <a class="btn btn--ghost" id="resRetry" href="checkout.html" hidden>Intentar de nuevo</a>
       </div>
+    </section>
+
+    <!-- Paso 4: encuesta (solo con pago aprobado) -->
+    <section id="viewSurvey" class="panel survey-view" hidden>
+      <p class="step">Último paso · menos de 1 minuto</p>
+      <h1>¿Cómo fue tu experiencia?</h1>
+      <p class="muted">Responde 5 preguntas sobre el servicio. Tu opinión nos ayuda a mejorar.</p>
+      <form class="survey" id="surveyForm" novalidate>
+        <h2>Cuéntanos cómo fue tu experiencia</h2>
+        <p class="muted">5 preguntas rápidas sobre el servicio. Tu opinión nos ayuda a mejorar.</p>
+        <fieldset><legend>1. ¿Qué tan satisfecho(a) estás con tu compra en general?</legend><div class="scale" data-q="q1" data-min="1" data-max="5" role="radiogroup"></div><small class="err" data-for="q1"></small></fieldset>
+        <fieldset><legend>2. ¿Qué tan fácil fue el proceso de compra y pago?</legend><div class="scale" data-q="q2" data-min="1" data-max="5" role="radiogroup"></div><small class="err" data-for="q2"></small></fieldset>
+        <fieldset><legend>3. ¿Qué tan claras fueron las fotos, tallas y precios?</legend><div class="scale" data-q="q3" data-min="1" data-max="5" role="radiogroup"></div><small class="err" data-for="q3"></small></fieldset>
+        <fieldset><legend>4. ¿Qué tan probable es que recomiendes BRINYSH MOVE? (0 = nada, 10 = muy probable)</legend><div class="scale scale--wide" data-q="q4" data-min="0" data-max="10" role="radiogroup"></div><small class="err" data-for="q4"></small></fieldset>
+        <label>5. ¿Algún comentario o sugerencia? (opcional)
+          <textarea name="q5" maxlength="500" rows="3"></textarea>
+        </label>
+        <button class="btn btn--primary btn--block" type="submit" id="surveyBtn">Enviar encuesta</button>
+      <div class="progress" id="surveyProgress" role="status" aria-live="polite" hidden>
+        <p class="progress__msg" id="surveyMsg">Guardando tu opinión…</p>
+        <div class="progress__track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="surveyBar">
+          <div class="progress__fill" id="surveyFill"></div>
+        </div>
+        <p class="progress__pct" id="surveyPct">0%</p>
+      </div>
+      </form>
+      <button class="btn btn--link" type="button" id="surveySkip">Omitir por ahora</button>
+    </section>
+
+    <!-- Paso 5: agradecimiento -->
+    <section id="viewThanks" class="panel result" hidden aria-live="polite">
+      <div class="result__icon ok" aria-hidden="true">♥</div>
+      <h1>¡Gracias por tu opinión!</h1>
+      <p class="muted">Tu respuesta fue registrada. Nos ayuda a seguir mejorando BRINYSH MOVE.</p>
+      <div class="bank__actions"><a class="btn btn--primary" href="index.html">Volver a la tienda</a></div>
     </section>
 
     <p class="empty" id="emptyCart" hidden>Tu carrito está vacío. <a href="index.html#catalogo">Ir al catálogo</a></p>
